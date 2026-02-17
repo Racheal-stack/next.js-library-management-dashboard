@@ -11,6 +11,7 @@ interface Book {
 export default function BooksList() {
   const [books, setBooks] = useState<Book[]>([]);
   const [filter, setFilter] = useState("");
+  const [availabilityFilter, setAvailabilityFilter] = useState<string>('all')
 
   useEffect(() => {
     fetch('/api/books')
@@ -18,9 +19,15 @@ export default function BooksList() {
       .then(data => setBooks(data));
   }, []);
 
-  const filteredBooks = books.filter(book =>
-    book.author.toLowerCase().includes(filter.toLowerCase())
-  );
+
+  const filteredBooks = books.filter(book => {
+    const authorMatch = book.author.toLowerCase().includes(filter.toLowerCase());
+    const availabilityMatch = 
+    availabilityFilter === 'all' ||
+    (availabilityFilter === 'available' && book.available) ||
+    (availabilityFilter === 'unavailable' && !book.available);
+    return authorMatch && availabilityMatch;
+  })
 
   return (
     <Layout>
@@ -32,6 +39,14 @@ export default function BooksList() {
           className="border p-2 mb-4"
           onChange={(e) => setFilter(e.target.value)}
         />
+        <select
+          className="border p-2 mb-4 ml-2"
+          onChange={(e) => setAvailabilityFilter(e.target.value)}
+        >
+          <option value="all">All</option>
+          <option value="available">Available</option>
+          <option value="unavailable">Checked out</option>
+        </select>
         <ul className="space-y-4">
           {filteredBooks.map(book => (
             <li key={book.id} className="border p-4 rounded bg-white">

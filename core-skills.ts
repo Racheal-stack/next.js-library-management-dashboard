@@ -9,6 +9,8 @@ function getAvailableBooks(
   bookList: { title: string; author: string; available: boolean }[]
 ): { title: string; author: string }[] {
   // Implement the function using map and filter
+  return bookList.filter(book => book.available).map(({title, author})=> ({title, author}));
+
 }
 
 console.log(getAvailableBooks(books));
@@ -30,12 +32,14 @@ async function fetchData(): Promise<string> {
 // Modify this function to correctly await fetchData() and return "Success: Data Loaded"
 async function handleData(): Promise<string> {
   // Implement the function
+  const result = await fetchData();
+  return `Success: ${result}`;
 }
 
 /* Fix the function so that it correctly extracts values from an object and assigns default values when needed. */
 function getUserInfo(user: { name?: string; age?: number }): string {
   const { name = "Unknown", age = 30 } = user;
-  return `\${name} is \${age} years old.`;
+  return `${name} is ${age} years old.`;
 }
 
 console.log(getUserInfo({ name: "Alice" })); // Expected output: "Alice is 30 years old."
